@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Đang tải...</title>
+
+<style>
+body{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  margin:0;
+  background:#0a1d37;
+  color:white;
+  font-family:Arial, sans-serif;
+}
+img{
+  width:120px;
+  margin-bottom:20px;
+  animation:pulse 1.5s infinite;
+}
+h3{
+  font-weight:normal;
+  opacity:0.9;
+}
+@keyframes pulse{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.05);}
+  100%{transform:scale(1);}
+}
+</style>
+</head>
+
+<body>
+
+<img src="shield.png" alt="Logo khiên">
+<h3>"Lên tiếng hôm nay, an toàn cho ngày mai."</h3>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const next = params.get("next") || "index.html";
+
+setTimeout(function(){
+  window.location.href = next;
+}, 2500);
+</script>
+
+</body>
+</html>

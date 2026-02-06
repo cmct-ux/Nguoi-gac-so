@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phân tích nội dung</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body{
+  font-family:'Baloo 2', cursive;
+  background:linear-gradient(135deg,#fdfbfb,#ebedee);
+  text-align:center;
+  padding:40px;
+}
+.container{
+  background:white;
+  max-width:600px;
+  margin:auto;
+  padding:30px;
+  border-radius:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+textarea{
+  width:95%;
+  height:160px;
+  font-size:16px;
+  padding:10px;
+  border-radius:10px;
+}
+button{
+  margin-top:20px;
+  padding:12px 30px;
+  border:none;
+  border-radius:30px;
+  font-size:16px;
+  background:#ff6f61;
+  color:white;
+  cursor:pointer;
+}
+#result{
+  margin-top:15px;
+  font-size:18px;
+  font-weight:bold;
+  color:green;
+}
+.sticker{width:90px;margin-top:15px;}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Phân tích tin nhắn / hình ảnh</h1>
+  <p>Nhập nội dung tin nhắn từ đối phương</p>
+
+  <textarea id="message"></textarea><br>
+  <button onclick="analyze()">Phân tích</button>
+
+  <div id="result"></div>
+
+  <img class="sticker" src="https://i.imgur.com/0y0y0y0.png">
+</div>
+
+<script>
+// ===============================
+// 1. DANH SÁCH ~1000 TỪ/CÂU QUẤY RỐI
+// ===============================
+const offensive=[
+"gửi ảnh nóng","cho xem chút đi","cho anh xem hàng","chụp ảnh kín gửi qua đây",
+"không mặc gì chụp cho anh","gửi ảnh mát mẻ","show hàng đi em","chụp chỗ đó cho anh xem",
+"gửi ảnh nuy","gửi ảnh nude","ước gì được thấy em ngay lúc này",
+"đừng ngại chỉ hai đứa biết thôi","có ảnh nào mới tươi không","chụp cận cảnh đi",
+"quay clip ngắn gửi qua đây","gửi ảnh không che","đang mặc đồ gì đó","cởi bớt ra được không",
+"nhìn ảnh em anh chịu không nổi","gửi ảnh thưởng","cho anh xem vốn tự có",
+"chat sex không","nói chuyện người lớn","tự sướng không","vui vẻ qua cam",
+"xem phim đen không","đi khách sạn không","bao nuôi em","người tình bí mật",
+"thử cảm giác lạ","cho anh địa chỉ nhà","đêm nay qua với anh","anh thèm em",
+"muốn chạm vào người em","em làm anh rạo rực","kể về lần đầu","thích tư thế nào",
+"ra ngoài gặp chút","anh trả tiền cho thời gian","sugar baby",
+"tôi có ảnh nóng của bạn","muốn clip này lên mạng không","gửi thêm ảnh nếu không muốn bị lộ",
+"tôi sẽ gửi cho bố mẹ bạn","đừng để tôi đăng","ngoan ngoãn thì tôi xóa","tôi biết địa chỉ nhà bạn",
+"một là gửi ảnh hai là mất mặt","hack camera","trả tiền tôi sẽ xóa clip","đừng chặn tôi","liệu mà nghe lời",
+"ngon quá","mẩy thật","vòng một đẹp","mông to","giỏi chuyện đó","kích dục",
+"dâm đãng","dễ dãi","đồ lẳng lơ","sinh ra để đàn ông hưởng","hàng họ thế nào","đè em ra","quyến rũ rẻ tiền",
+"anh chỉ đùa","em nhạy cảm quá","đàn ông ai chẳng thế","không làm theo là không yêu",
+"đừng ngây thơ","ai bảo em đăng ảnh","em quyến rũ trước","có mất mát gì đâu","chỉ xem thôi",
+"bí mật của chúng ta","chẳng ai tin đâu","em cũng tận hưởng mà đúng không",
+"check inbox","coi hàng không","thủ dâm nghĩ về em","bắn vào mặt","nước nhiều không",
+"xin tư liệu","link đâu","đi tour","ăn tươi nuốt sống","clip cho nóng","mặc lót màu gì",
+"cởi nút áo","dạy em cách yêu","em thuộc về anh","đừng hòng chạy thoát",
+"hấp dẫn","sexy","chịch","lồn","cu","cặc","nứng","địt","bú cu","múp","thủ dâm","lọ","móc","sục","móc lồn","lọ chéo","sóc lọ","tinh trùng","sex","sẽ gầy","tự sướng","tinh ko","nước lồn","liếm cu","liếm lồn","mút lồn","lol","tình dục","cơ thể","bộ phận sinh dục","ảnh nhạy cảm","ảnh lồn","ảnh buồi","ảnh cặc","bắn tinh","sex gay","chịch nhau","đụ nhau","địt nhau","link ko","link","cu giả","gia củ","mút cu","mút buồi","bí mật","ko ai biết đâu","vùng kín","chỗ đẹp nhất","bú buồi","có cái lồn","mút buồi","buồi","nhà nghỉ","gái bán hoa","trai bao","gái đứng đường","ảnh khoả thân","ảnh nude","ảnh nút","đạo tàn bụ","đụ","phim sẽ","chịch","tinh","dâm","không mặc gì","ko mặc gì","múp","m đang ở đâu","cẩn thận tao","con đĩ","con điếm","đĩ","điếm","coi chừng đó","Tao biết nhà mày ở đâu rồi"
+];
+
+// ===============================
+// 2. CẤU TRÚC CÂU NGUY HIỂM
+// ===============================
+const patterns=[
+/gửi\s+ảnh.*cho/i,
+/chụp.*gửi/i,
+/quay.*clip.*cho/i,
+/ảnh.*nóng/i,
+/cho\s+.*\s+xem\s+.*\s+đẹp\s+của\s+.*/i
+];
+
+// ===============================
+// 3. HÀM PHÂN TÍCH
+// ===============================
+function analyze(){
+  const text=document.getElementById("message").value.toLowerCase();
+  let danger=false;
+
+  for(let w of offensive){
+    if(text.includes(w)){danger=true;break;}
+  }
+
+  if(!danger){
+    for(let p of patterns){
+      if(p.test(text)){danger=true;break;}
+    }
+  }
+
+  if(danger){
+  window.location.href="load.html?next=alert.html";
+  }else{
+    document.getElementById("result").innerText="Nội dung an toàn, lành mạnh";
+  }
+}
+</script>
+</body>
+</html>
